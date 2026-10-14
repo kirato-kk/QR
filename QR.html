@@ -188,9 +188,8 @@
         let html5QrCode = null;
         let scanCooldown = false;
         let activeTargets = [];
-        let editingIndex = null; // 編集中のインデックス（nullなら新規）
+        let editingIndex = null;
 
-        // 画面を切り替える超シンプル関数
         function switchView(viewId) {
             ['view-home', 'view-camera', 'view-form', 'view-saved'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
@@ -205,7 +204,6 @@
             switchView('view-home');
         }
 
-        // ================= データ管理 =================
         function getSets() {
             try {
                 const data = localStorage.getItem('qr_simple_sets');
@@ -223,7 +221,9 @@
         function playSound(type) {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const now = ctx.currentTime;
+
             if (type === 'success') {
+                // ポン・ピロリン♪（明るい正解音）
                 [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -234,20 +234,27 @@
                     osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.25);
                 });
             } else {
+                // 🚨 ピーーピーー！！（長めに引き延ばした警告エラー音）
                 [880, 698.46].forEach((f, i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(f, now + i * 0.1);
-                    gain.gain.setValueAtTime(0.1, now + i * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.18);
+                    osc.type = 'sawtooth'; // ざらついた警告音向きの波形
+                    
+                    // 発音タイミングを少しずらしつつ、長め（0.35秒ずつ）に鳴らす
+                    const startTime = now + i * 0.38;
+                    osc.frequency.setValueAtTime(f, startTime);
+                    
+                    gain.gain.setValueAtTime(0.2, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+                    
+                    osc.connect(gain); 
+                    gain.connect(ctx.destination);
+                    osc.start(startTime); 
+                    osc.stop(startTime + 0.38);
                 });
             }
         }
 
-        // ================= 入力フォーム操作 =================
         function showCreateView(editData = null, index = null) {
             editingIndex = index;
             document.getElementById('form-heading').innerText = editData ? "✏️ セットの編集" : "✨ 正解セットの作成";
@@ -315,7 +322,6 @@
             showSavedList();
         }
 
-        // ================= 保存中リスト表示 =================
         function showSavedList() {
             const container = document.getElementById('saved-list-container');
             const sets = getSets();
@@ -336,7 +342,6 @@
                 info.innerHTML = `<div class="saved-title">${set.title}</div><div class="saved-desc">正解: ${set.items.join(', ')}</div>`;
                 info.onclick = () => startJudgeReader(set.items, set.title);
 
-                // 編集ボタン
                 const editBtn = document.createElement('button');
                 editBtn.className = 'del-btn';
                 editBtn.style.backgroundColor = '#2196F3';
@@ -344,7 +349,6 @@
                 editBtn.innerText = '✏️';
                 editBtn.onclick = (e) => { e.stopPropagation(); showCreateView(set, idx); };
 
-                // 削除ボタン
                 const delBtn = document.createElement('button');
                 delBtn.className = 'del-btn';
                 delBtn.innerText = '×';
@@ -366,7 +370,6 @@
             switchView('view-saved');
         }
 
-        // ================= カメラ機能 =================
         function startNormalReader() {
             document.getElementById('camera-title').innerText = "通常のQR読み取り";
             activeTargets = null;
@@ -394,7 +397,6 @@
                     if (scanCooldown) return;
 
                     if (targets) {
-                        // 判定モード
                         if (targets.includes(text)) {
                             playSound('success');
                             resDiv.className = "result success";
@@ -402,10 +404,9 @@
                         } else {
                             playSound('error');
                             resDiv.className = "result error";
-                            resDiv.innerHTML = `🚨 【ピーピー！】違う文字です<br>${text}`;
+                            resDiv.innerHTML = `🚨 【エラーです！！！】違う文字です<br>${text}`;
                         }
                     } else {
-                        // 通常モード
                         playSound('success');
                         resDiv.className = "result neutral";
                         resDiv.innerHTML = `読み取り結果: <a href="${text.startsWith('http') ? text : '#'}" target="_blank">${text}</a>`;
