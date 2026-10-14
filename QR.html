@@ -10,14 +10,14 @@
         body {
             font-family: sans-serif;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             background-color: #f4f4f9;
             margin: 0;
         }
         h1 {
-            font-size: 22px;
+            font-size: 20px;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .container {
             max-width: 500px;
@@ -25,57 +25,43 @@
         }
         .card {
             background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 15px;
             text-align: left;
         }
-        .center-card {
-            text-align: center;
-        }
-        
-        /* 確実に非表示にするためのCSS指定 */
-        .card.hidden {
+        .hidden {
             display: none !important;
         }
-
         /* ボタンスタイル */
         .btn {
             background-color: #2196F3;
             color: white;
             border: none;
-            padding: 14px 20px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: 0.2s;
-        }
-        .btn:hover {
-            background-color: #0b7dda;
-            transform: translateY(-1px);
+            margin-bottom: 10px;
         }
         .btn-green { background-color: #4caf50; }
-        .btn-green:hover { background-color: #43a047; }
         .btn-orange { background-color: #ff9800; }
-        .btn-orange:hover { background-color: #f57c00; }
         .btn-red { background-color: #f44336; }
-        .btn-red:hover { background-color: #d32f2f; }
+        .btn:active { opacity: 0.8; }
 
-        /* 入力フォーム・ラベル */
+        /* 入力フォーム */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-        .form-label {
+        label {
             font-size: 13px;
             font-weight: bold;
             color: #555;
-            margin-bottom: 5px;
             display: block;
+            margin-bottom: 4px;
         }
         input[type="text"] {
             width: 100%;
@@ -83,519 +69,367 @@
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 15px;
-        }
-
-        /* 入力行 */
-        #inputs-container, #detail-inputs-container {
-            margin-bottom: 15px;
-            max-height: 200px;
-            overflow-y: auto;
+            font-size: 14px;
         }
         .input-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 8px;
             align-items: center;
         }
         .del-btn {
             background-color: #ff5252;
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
         }
-        .del-btn:hover { background-color: #ff1744; }
 
-        /* 保存中リストカード */
-        .saved-card {
-            background: #fff;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 10px;
+        /* 保存中リストのカード */
+        .saved-item-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .saved-info {
-            cursor: pointer;
             flex: 1;
+            cursor: pointer;
         }
-        .saved-title-text {
+        .saved-title {
             font-weight: bold;
-            font-size: 16px;
             color: #0d47a1;
-            margin-bottom: 4px;
+            font-size: 15px;
         }
-        .saved-sub-text {
+        .saved-desc {
             font-size: 12px;
             color: #666;
         }
 
-        /* カメラと結果表示 */
-        #reader-normal, #reader-judge {
+        /* カメラと結果 */
+        #reader {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        #result-normal, #result-judge {
-            font-size: 18px;
+        #result {
+            font-size: 16px;
             font-weight: bold;
-            padding: 15px;
-            border-radius: 8px;
-            word-break: break-all;
+            padding: 12px;
+            border-radius: 6px;
             text-align: center;
+            margin-bottom: 10px;
         }
-        .success {
-            color: #1b5e20;
-            background-color: #e8f5e9;
-            border: 2px solid #c8e6c9;
-        }
-        .error {
-            color: #b71c1c;
-            background-color: #ffebee;
-            border: 2px solid #ffcdd2;
-        }
-        .neutral {
-            color: #333;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-        }
+        .success { color: #1b5e20; background-color: #e8f5e9; border: 1px solid #c8e6c9; }
+        .error { color: #b71c1c; background-color: #ffebee; border: 1px solid #ffcdd2; }
+        .neutral { color: #333; background-color: #f9f9f9; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
     <div class="container">
 
-        <!-- ================= ページ 0: メインメニュー ================= -->
-        <div id="page-home" class="card center-card">
+        <!-- ================= メイン画面 ================= -->
+        <div id="view-home" class="card" style="text-align: center;">
             <h1>QRコードリーダーアプリ</h1>
-            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">モードを選択してください</p>
-            <button class="btn" onclick="goToPage('page-normal-reader')">📷 通常のQR読み取り</button>
-            <button class="btn btn-green" onclick="goToPage('page-judge-menu')">🎯 判定モード（設定・開始）</button>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">モードを選んでください</p>
+            <button class="btn" onclick="startNormalReader()">📷 通常のQR読み取り</button>
+            <button class="btn btn-green" onclick="showCreateView()">✨ 判定モード（新規作成）</button>
+            <button class="btn btn-orange" onclick="showSavedList()">📂 保存中から選んで開始</button>
         </div>
 
-        <!-- ================= ページ 1: 通常リーダー ================= -->
-        <div id="page-normal-reader" class="card center-card hidden">
-            <h1>通常のQR読み取り</h1>
-            <div id="reader-normal"></div>
-            <div id="result-normal" class="neutral" style="margin-bottom: 15px;">QRコードをかざしてください</div>
-            <button class="btn btn-red" onclick="goBackHome()">🏠 メニューに戻る</button>
+        <!-- ================= カメラ実行画面（通常・判定兼用） ================= -->
+        <div id="view-camera" class="card hidden" style="text-align: center;">
+            <h1 id="camera-title">QR読み取り中</h1>
+            <div id="reader"></div>
+            <div id="result" class="neutral">QRコードをかざしてください</div>
+            <button class="btn btn-red" onclick="stopCameraAndGoHome()">🏠 メニューに戻る</button>
         </div>
 
-        <!-- ================= ページ 2: 判定モードのメインメニュー ================= -->
-        <div id="page-judge-menu" class="card center-card hidden">
-            <h1>🎯 判定モード</h1>
-            <p style="font-size: 13px; color: #666; margin-bottom: 20px;">行いたい操作を選んでください</p>
-            <button class="btn btn-green" onclick="openCreatePage()">＋ 新規セットを追加する</button>
-            <button class="btn btn-orange" onclick="openLoadPage()">📂 保存中から選んで開始する</button>
-            <button class="btn btn-red" style="margin-top: 20px;" onclick="goBackHome()">🏠 メニューに戻る</button>
-        </div>
-
-        <!-- ================= ページ 3: 新規作成・追加ページ ================= -->
-        <div id="page-create" class="card hidden">
-            <h1>✨ 正解セットの作成</h1>
+        <!-- ================= 新規作成・編集画面 ================= -->
+        <div id="view-form" class="card hidden">
+            <h1 id="form-heading">✨ 正解セットの作成</h1>
             
             <div class="form-group">
-                <label class="form-label">セットのタイトル（空欄の場合は自動で名前がつきます）</label>
-                <input type="text" id="set-title-input" placeholder="例: お店のスタンプラリー景品">
+                <label>タイトル（空欄なら自動で「セット #X」になります）</label>
+                <input type="text" id="input-title" placeholder="例: クイズの答え">
             </div>
 
             <div class="form-group">
-                <label class="form-label">正解の文字（※どれか1つ合っていれば正解になります）</label>
+                <label>正解の文字（どれか1つ合っていれば正解）</label>
                 <div id="inputs-container"></div>
             </div>
 
-            <button class="btn btn-green" onclick="addInputRow()" style="margin-bottom: 15px;">＋ 入力欄を追加</button>
-            <button class="btn" onclick="saveNewSet()">💾 保存する</button>
-            <button class="btn btn-red" onclick="goToPage('page-judge-menu')">🔙 戻る</button>
+            <button class="btn btn-green" onclick="addInputRow()" style="margin-bottom: 10px;">＋ 入力欄を追加</button>
+            <button class="btn" onclick="saveSetData()">💾 保存する</button>
+            <button class="btn btn-red" onclick="showHome()">🔙 メニューに戻る</button>
         </div>
 
-        <!-- ================= ページ 4: 保存中から選ぶページ ================= -->
-        <div id="page-load" class="card hidden">
+        <!-- ================= 保存中リスト画面 ================= -->
+        <div id="view-saved" class="card hidden">
             <h1>📂 保存中一覧</h1>
-            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
-                タップすると詳細や編集を確認できます：
-            </p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">タップするとカメラが起動、右のボタンで編集・削除</p>
             
-            <div id="saved-sets-container" style="max-height: 280px; overflow-y: auto; margin-bottom: 15px;">
-                <!-- 保存されたリストがここに並ぶ -->
-            </div>
-
-            <button class="btn btn-red" onclick="goToPage('page-judge-menu')">🔙 戻る</button>
-        </div>
-
-        <!-- ================= ページ 4.5: 保存セットの詳細・編集画面 ================= -->
-        <div id="page-detail" class="card hidden">
-            <h1>✏️ セットの詳細・編集</h1>
-
-            <div class="form-group">
-                <label class="form-label">タイトル</label>
-                <input type="text" id="detail-title-input">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">正解の文字一覧（変更して上書き保存できます）</label>
-                <div id="detail-inputs-container"></div>
-                <button class="btn btn-green" onclick="addDetailInputRow()" style="padding: 8px; font-size: 14px;">＋ 入力欄を追加</button>
-            </div>
-
-            <button class="btn btn-orange" onclick="updateCurrentSet()">💾 変更を上書き保存</button>
-            <button class="btn btn-green" onclick="startJudgeFromDetail()" style="background-color: #2e7d32;">🚀 このセットでカメラを起動する！</button>
-            <button class="btn btn-red" onclick="openLoadPage()">🔙 一覧に戻る</button>
-        </div>
-
-        <!-- ================= ページ 5: 判定カメラ実行ページ ================= -->
-        <div id="page-judge-camera" class="card center-card hidden">
-            <h1 id="active-set-title">🎯 判定中...</h1>
-            <div id="reader-judge"></div>
-            <div id="result-judge" class="neutral" style="margin-bottom: 15px;">QRコードをかざしてください</div>
-            <button class="btn btn-orange" onclick="cancelJudge()">⏹ 判定を解除してメニューに戻る</button>
+            <div id="saved-list-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;"></div>
+            
+            <button class="btn btn-red" onclick="showHome()">🔙 メニューに戻る</button>
         </div>
 
     </div>
 
     <script>
-        let normalScanner = null;
-        let judgeScanner = null;
+        let html5QrCode = null;
         let scanCooldown = false;
-        let activeTargets = []; 
-        let currentEditingIndex = null; 
+        let activeTargets = [];
+        let editingIndex = null; // 編集中のインデックス（nullなら新規）
 
-        // ページ切り替え関数
-        function goToPage(pageId) {
-            document.querySelectorAll('.container > .card').forEach(el => el.classList.add('hidden'));
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.remove('hidden');
-            }
-
-            stopAllCameras();
-
-            if (pageId === 'page-normal-reader') {
-                startNormalCamera();
-            } else if (pageId === 'page-load') {
-                renderSavedSetsList();
+        // 画面を切り替える超シンプル関数
+        function switchView(viewId) {
+            ['view-home', 'view-camera', 'view-form', 'view-saved'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+            if (viewId !== 'view-camera') {
+                stopCamera();
             }
         }
 
-        function goBackHome() {
-            stopAllCameras();
-            goToPage('page-home');
+        function showHome() {
+            switchView('view-home');
         }
 
-        function stopAllCameras() {
-            if (normalScanner) {
-                normalScanner.stop().catch(() => {});
-                normalScanner = null;
-            }
-            if (judgeScanner) {
-                judgeScanner.stop().catch(() => {});
-                judgeScanner = null;
-            }
-        }
-
-        // ================= サウンド演出 (Web Audio API) =================
-        function playSound(type) {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const now = audioCtx.currentTime;
-
-            if (type === 'success') {
-                const notes = [523.25, 659.25, 783.99, 1046.50]; 
-                notes.forEach((freq, index) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + index * 0.07);
-                    
-                    gain.gain.setValueAtTime(0.2, now + index * 0.07);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.07 + 0.25);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + index * 0.07);
-                    osc.stop(now + index * 0.07 + 0.3);
-                });
-            } else {
-                const notes = [880, 698.46]; 
-                notes.forEach((freq, index) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(freq, now + index * 0.12);
-
-                    gain.gain.setValueAtTime(0.15, now + index * 0.12);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.12 + 0.15);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + index * 0.12);
-                    osc.stop(now + index * 0.12 + 0.18);
-                });
-            }
-        }
-
-        // ================= データ管理 (LocalStorage) =================
-        function getStoredSets() {
+        // ================= データ管理 =================
+        function getSets() {
             try {
-                const stored = localStorage.getItem('qr_saved_sets');
-                return stored ? JSON.parse(stored) : [];
+                const data = localStorage.getItem('qr_simple_sets');
+                return data ? JSON.parse(data) : [];
             } catch (e) {
-                console.error("データ読み込みエラー", e);
                 return [];
             }
         }
 
-        function saveStoredSets(sets) {
-            localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
+        function saveSets(sets) {
+            localStorage.setItem('qr_simple_sets', JSON.stringify(sets));
         }
 
-        // ================= 新規作成ページ関連 =================
-        function openCreatePage() {
-            document.getElementById('set-title-input').value = '';
+        // ================= サウンド (Web Audio API) =================
+        function playSound(type) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            if (type === 'success') {
+                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.frequency.setValueAtTime(f, now + i * 0.06);
+                    gain.gain.setValueAtTime(0.15, now + i * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.2);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.25);
+                });
+            } else {
+                [880, 698.46].forEach((f, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(f, now + i * 0.1);
+                    gain.gain.setValueAtTime(0.1, now + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.18);
+                });
+            }
+        }
+
+        // ================= 入力フォーム操作 =================
+        function showCreateView(editData = null, index = null) {
+            editingIndex = index;
+            document.getElementById('form-heading').innerText = editData ? "✏️ セットの編集" : "✨ 正解セットの作成";
+            document.getElementById('input-title').value = editData ? editData.title : '';
+            
             const container = document.getElementById('inputs-container');
             container.innerHTML = '';
-            addInputRow();
-            addInputRow();
-            goToPage('page-create');
+            
+            if (editData && editData.items) {
+                editData.items.forEach(val => addInputRow(val));
+            } else {
+                addInputRow();
+                addInputRow();
+            }
+            switchView('view-form');
         }
 
-        function addInputRow(value = "") {
+        function addInputRow(val = "") {
             const container = document.getElementById('inputs-container');
-            createInputRowElement(container, value);
-        }
-
-        function addDetailInputRow(value = "") {
-            const container = document.getElementById('detail-inputs-container');
-            createInputRowElement(container, value);
-        }
-
-        function createInputRowElement(container, value = "") {
             const row = document.createElement('div');
             row.className = 'input-row';
             
             const input = document.createElement('input');
             input.type = 'text';
-            input.placeholder = '文字を入力してください';
-            input.value = value;
+            input.placeholder = '文字を入力';
+            input.value = val;
 
-            const delBtn = document.createElement('button');
-            delBtn.type = 'button';
-            delBtn.className = 'del-btn';
-            delBtn.innerText = '×';
-            delBtn.onclick = function() {
-                container.removeChild(row);
-            };
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'del-btn';
+            del.innerText = '×';
+            del.onclick = () => container.removeChild(row);
 
             row.appendChild(input);
-            row.appendChild(delBtn);
+            row.appendChild(del);
             container.appendChild(row);
         }
 
-        function saveNewSet() {
-            const container = document.getElementById('inputs-container');
-            const inputs = container.querySelectorAll('input[type="text"]');
-            let lines = [];
-            
-            inputs.forEach(input => {
-                const val = input.value.trim();
-                if (val.length > 0) lines.push(val);
+        function saveSetData() {
+            const titleInput = document.getElementById('input-title').value.trim();
+            const inputs = document.querySelectorAll('#inputs-container input');
+            let items = [];
+            inputs.forEach(inp => {
+                if (inp.value.trim()) items.push(inp.value.trim());
             });
 
-            if (lines.length === 0) {
-                alert("有効なテキストが入力されていません！");
+            if (items.length === 0) {
+                alert("正解の文字を1つ以上入力してください！");
                 return;
             }
 
-            let allSets = getStoredSets();
-            let titleInput = document.getElementById('set-title-input').value.trim();
-            if (!titleInput) {
-                titleInput = `セット #${allSets.length + 1}`;
+            let sets = getSets();
+            let title = titleInput;
+
+            if (editingIndex !== null) {
+                if (!title) title = sets[editingIndex].title;
+                sets[editingIndex] = { title, items };
+            } else {
+                if (!title) title = `セット #${sets.length + 1}`;
+                sets.push({ title, items });
             }
 
-            allSets.push({ title: titleInput, items: lines });
-            saveStoredSets(allSets);
-            
-            // 保存完了後に「保存中一覧ページ」へ移動
-            openLoadPage();
+            saveSets(sets);
+            alert("保存しました！");
+            showSavedList();
         }
 
-        // ================= 保存中リストページ関連 =================
-        function openLoadPage() {
-            goToPage('page-load');
-        }
-
-        function renderSavedSetsList() {
-            const container = document.getElementById('saved-sets-container');
-            const sets = getStoredSets();
+        // ================= 保存中リスト表示 =================
+        function showSavedList() {
+            const container = document.getElementById('saved-list-container');
+            const sets = getSets();
 
             if (sets.length === 0) {
-                container.innerHTML = '<span style="font-size: 13px; color: #999;">保存されたセットはありません</span>';
+                container.innerHTML = '<p style="font-size:13px; color:#888; text-align:center;">保存されたセットはありません</p>';
+                switchView('view-saved');
                 return;
             }
 
             container.innerHTML = '';
-            sets.forEach((setData, index) => {
-                const card = document.createElement('div');
-                card.className = 'saved-card';
+            sets.forEach((set, idx) => {
+                const box = document.createElement('div');
+                box.className = 'saved-item-box';
 
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'saved-info';
-                infoDiv.innerHTML = `
-                    <div class="saved-title-text">${setData.title}</div>
-                    <div class="saved-sub-text">正解文字: ${setData.items.join(', ')}</div>
-                `;
-                infoDiv.onclick = function() {
-                    openDetailPage(index);
-                };
+                const info = document.createElement('div');
+                info.className = 'saved-info';
+                info.innerHTML = `<div class="saved-title">${set.title}</div><div class="saved-desc">正解: ${set.items.join(', ')}</div>`;
+                info.onclick = () => startJudgeReader(set.items, set.title);
 
+                // 編集ボタン
+                const editBtn = document.createElement('button');
+                editBtn.className = 'del-btn';
+                editBtn.style.backgroundColor = '#2196F3';
+                editBtn.style.marginRight = '4px';
+                editBtn.innerText = '✏️';
+                editBtn.onclick = (e) => { e.stopPropagation(); showCreateView(set, idx); };
+
+                // 削除ボタン
                 const delBtn = document.createElement('button');
                 delBtn.className = 'del-btn';
                 delBtn.innerText = '×';
-                delBtn.onclick = function(e) {
+                delBtn.onclick = (e) => {
                     e.stopPropagation();
-                    if (confirm(`「${setData.title}」を削除しますか？`)) {
-                        sets.splice(index, 1);
-                        saveStoredSets(sets);
-                        renderSavedSetsList();
+                    if (confirm(`「${set.title}」を削除しますか？`)) {
+                        sets.splice(idx, 1);
+                        saveSets(sets);
+                        showSavedList();
                     }
                 };
 
-                card.appendChild(infoDiv);
-                card.appendChild(delBtn);
-                container.appendChild(card);
-            });
-        }
-
-        // ================= 詳細・編集ページ関連 =================
-        function openDetailPage(index) {
-            currentEditingIndex = index;
-            const sets = getStoredSets();
-            const setData = sets[index];
-
-            document.getElementById('detail-title-input').value = setData.title;
-            const container = document.getElementById('detail-inputs-container');
-            container.innerHTML = '';
-            setData.items.forEach(item => {
-                createInputRowElement(container, item);
+                box.appendChild(info);
+                box.appendChild(editBtn);
+                box.appendChild(delBtn);
+                container.appendChild(box);
             });
 
-            goToPage('page-detail');
+            switchView('view-saved');
         }
 
-        function updateCurrentSet() {
-            const container = document.getElementById('detail-inputs-container');
-            const inputs = container.querySelectorAll('input[type="text"]');
-            let lines = [];
-            
-            inputs.forEach(input => {
-                const val = input.value.trim();
-                if (val.length > 0) lines.push(val);
-            });
-
-            if (lines.length === 0) {
-                alert("正解の文字が1つもありません！");
-                return;
-            }
-
-            let titleInput = document.getElementById('detail-title-input').value.trim();
-            if (!titleInput) {
-                titleInput = `セット #${currentEditingIndex + 1}`;
-            }
-
-            let sets = getStoredSets();
-            sets[currentEditingIndex] = { title: titleInput, items: lines };
-            saveStoredSets(sets);
-            alert("上書き保存しました！");
-            openLoadPage();
+        // ================= カメラ機能 =================
+        function startNormalReader() {
+            document.getElementById('camera-title').innerText = "通常のQR読み取り";
+            activeTargets = null;
+            switchView('view-camera');
+            initCamera(null);
         }
 
-        function startJudgeFromDetail() {
-            const container = document.getElementById('detail-inputs-container');
-            const inputs = container.querySelectorAll('input[type="text"]');
-            let lines = [];
-            inputs.forEach(input => {
-                const val = input.value.trim();
-                if (val.length > 0) lines.push(val);
-            });
-
-            if (lines.length === 0) {
-                alert("正解の文字がありません！");
-                return;
-            }
-
-            let title = document.getElementById('detail-title-input').value.trim() || "判定セット";
-            startJudgeWithTargets(lines, title);
-        }
-
-        // ================= カメラ＆判定処理 =================
-        function startNormalCamera() {
-            normalScanner = new Html5Qrcode("reader-normal");
-            normalScanner.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: 250 },
-                (decodedText) => {
-                    if (scanCooldown) return;
-                    playSound('success');
-                    const resDiv = document.getElementById('result-normal');
-                    resDiv.className = "neutral";
-                    resDiv.innerHTML = `読み取り結果: <a href="${decodedText.startsWith('http') ? decodedText : '#'}" target="_blank">${decodedText}</a>`;
-                    
-                    scanCooldown = true;
-                    setTimeout(() => { scanCooldown = false; }, 1500);
-                }
-            ).catch(err => {
-                console.error("カメラ起動エラー", err);
-                document.getElementById('result-normal').innerText = "カメラの起動に失敗しました（権限を確認してください）";
-            });
-        }
-
-        function startJudgeWithTargets(targets, title) {
+        function startJudgeReader(targets, title) {
+            document.getElementById('camera-title').innerText = `🎯 判定中: ${title}`;
             activeTargets = targets;
-            goToPage('page-judge-camera');
-            document.getElementById('active-set-title').innerText = `🎯 ${title}`;
+            switchView('view-camera');
+            initCamera(targets);
+        }
 
-            judgeScanner = new Html5Qrcode("reader-judge");
-            judgeScanner.start(
+        function initCamera(targets) {
+            const resDiv = document.getElementById('result');
+            resDiv.className = "neutral";
+            resDiv.innerText = "QRコードをかざしてください";
+
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: 250 },
-                (decodedText) => {
+                (text) => {
                     if (scanCooldown) return;
 
-                    const resDiv = document.getElementById('result-judge');
-                    if (activeTargets.includes(decodedText)) {
-                        playSound('success');
-                        resDiv.className = "success";
-                        resDiv.innerHTML = `🎉 【正解！】<br>読み取り文字: ${decodedText}`;
+                    if (targets) {
+                        // 判定モード
+                        if (targets.includes(text)) {
+                            playSound('success');
+                            resDiv.className = "result success";
+                            resDiv.innerHTML = `🎉 【正解！】<br>${text}`;
+                        } else {
+                            playSound('error');
+                            resDiv.className = "result error";
+                            resDiv.innerHTML = `🚨 【ピーピー！】違う文字です<br>${text}`;
+                        }
                     } else {
-                        playSound('error');
-                        resDiv.className = "error";
-                        resDiv.innerHTML = `🚨 【ピーピー！】違う文字です<br>読み取り文字: ${decodedText}`;
+                        // 通常モード
+                        playSound('success');
+                        resDiv.className = "result neutral";
+                        resDiv.innerHTML = `読み取り結果: <a href="${text.startsWith('http') ? text : '#'}" target="_blank">${text}</a>`;
                     }
 
                     scanCooldown = true;
                     setTimeout(() => { scanCooldown = false; }, 1800);
                 }
             ).catch(err => {
-                console.error("カメラ起動エラー", err);
-                document.getElementById('result-judge').innerText = "カメラの起動に失敗しました（権限を確認してください）";
+                resDiv.innerText = "カメラの起動に失敗しました（権限を確認してください）";
             });
         }
 
-        function cancelJudge() {
-            stopAllCameras();
-            goToPage('page-judge-menu');
+        function stopCamera() {
+            if (html5QrCode) {
+                html5QrCode.stop().catch(() => {});
+                html5QrCode = null;
+            }
         }
 
-        // 初期表示時に最初のメニューだけを表示するように実行
-        window.onload = function() {
-            goToPage('page-home');
-        };
+        function stopCameraAndGoHome() {
+            stopCamera();
+            showHome();
+        }
     </script>
 </body>
 </html>
