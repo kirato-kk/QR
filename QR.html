@@ -340,6 +340,21 @@
             }
         }
 
+        // ================= データ管理 (LocalStorage) =================
+        function getStoredSets() {
+            try {
+                const stored = localStorage.getItem('qr_saved_sets');
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                console.error("データ読み込みエラー", e);
+                return [];
+            }
+        }
+
+        function saveStoredSets(sets) {
+            localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
+        }
+
         // ================= 新規作成ページ関連 =================
         function openCreatePage() {
             document.getElementById('set-title-input').value = '';
@@ -404,18 +419,13 @@
             }
 
             allSets.push({ title: titleInput, items: lines });
-            localStorage.setItem('qr_saved_sets', JSON.stringify(allSets));
+            saveStoredSets(allSets);
             
             // 保存完了後に「保存中一覧ページ」へ移動
             openLoadPage();
         }
 
         // ================= 保存中リストページ関連 =================
-        function getStoredSets() {
-            const stored = localStorage.getItem('qr_saved_sets');
-            return stored ? JSON.parse(stored) : [];
-        }
-
         function openLoadPage() {
             goToPage('page-load');
         }
@@ -451,7 +461,7 @@
                     e.stopPropagation();
                     if (confirm(`「${setData.title}」を削除しますか？`)) {
                         sets.splice(index, 1);
-                        localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
+                        saveStoredSets(sets);
                         renderSavedSetsList();
                     }
                 };
@@ -500,7 +510,7 @@
 
             let sets = getStoredSets();
             sets[currentEditingIndex] = { title: titleInput, items: lines };
-            localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
+            saveStoredSets(sets);
             alert("上書き保存しました！");
             openLoadPage();
         }
@@ -553,7 +563,7 @@
             judgeScanner = new Html5Qrcode("reader-judge");
             judgeScanner.start(
                 { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
+                { fps: 10, qrbox: 250 },
                 (decodedText) => {
                     if (scanCooldown) return;
 
