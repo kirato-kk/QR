@@ -35,7 +35,7 @@
             text-align: center;
         }
         
-        /* 【重要】確実に非表示にするためのCSS指定 */
+        /* 確実に非表示にするためのCSS指定 */
         .card.hidden {
             display: none !important;
         }
@@ -87,7 +87,7 @@
         }
 
         /* 入力行 */
-        #inputs-container {
+        #inputs-container, #detail-inputs-container {
             margin-bottom: 15px;
             max-height: 200px;
             overflow-y: auto;
@@ -241,7 +241,7 @@
 
             <div class="form-group">
                 <label class="form-label">正解の文字一覧（変更して上書き保存できます）</label>
-                <div id="detail-inputs-container" style="margin-bottom: 10px; max-height: 180px; overflow-y: auto;"></div>
+                <div id="detail-inputs-container"></div>
                 <button class="btn btn-green" onclick="addDetailInputRow()" style="padding: 8px; font-size: 14px;">＋ 入力欄を追加</button>
             </div>
 
@@ -355,6 +355,11 @@
             createInputRowElement(container, value);
         }
 
+        function addDetailInputRow(value = "") {
+            const container = document.getElementById('detail-inputs-container');
+            createInputRowElement(container, value);
+        }
+
         function createInputRowElement(container, value = "") {
             const row = document.createElement('div');
             row.className = 'input-row';
@@ -400,7 +405,8 @@
 
             allSets.push({ title: titleInput, items: lines });
             localStorage.setItem('qr_saved_sets', JSON.stringify(allSets));
-            alert("保存しました！");
+            
+            // 保存完了後に「保存中一覧ページ」へ移動
             openLoadPage();
         }
 
@@ -470,11 +476,6 @@
             });
 
             goToPage('page-detail');
-        }
-
-        function addDetailInputRow(value = "") {
-            const container = document.getElementById('detail-inputs-container');
-            createInputRowElement(container, value);
         }
 
         function updateCurrentSet() {
@@ -552,7 +553,7 @@
             judgeScanner = new Html5Qrcode("reader-judge");
             judgeScanner.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: 250 },
+          { fps: 10, qrbox: 250 },
                 (decodedText) => {
                     if (scanCooldown) return;
 
@@ -581,7 +582,7 @@
             goToPage('page-judge-menu');
         }
 
-        // 初期表示時に最初のメニューだけを表示するように強制実行
+        // 初期表示時に最初のメニューだけを表示するように実行
         window.onload = function() {
             goToPage('page-home');
         };
