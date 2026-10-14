@@ -29,6 +29,10 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 15px;
+            text-align: left;
+        }
+        .center-card {
+            text-align: center;
         }
         .hidden {
             display: none !important;
@@ -60,26 +64,37 @@
         .btn-red { background-color: #f44336; }
         .btn-red:hover { background-color: #d32f2f; }
 
+        /* 入力フォーム・ラベル */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
         /* 入力行 */
         #inputs-container {
             margin-bottom: 15px;
-            max-height: 220px;
+            max-height: 200px;
             overflow-y: auto;
-            text-align: left;
         }
         .input-row {
             display: flex;
             gap: 8px;
             margin-bottom: 10px;
             align-items: center;
-        }
-        .input-row input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 15px;
         }
         .del-btn {
             background-color: #ff5252;
@@ -102,7 +117,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-align: left;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .saved-info {
@@ -111,13 +125,33 @@
         }
         .saved-title-text {
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             color: #0d47a1;
             margin-bottom: 4px;
         }
         .saved-sub-text {
             font-size: 12px;
             color: #666;
+        }
+
+        /* 詳細プレビュー・編集画面用の正解リスト表示 */
+        .preview-list {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        .preview-item {
+            font-size: 14px;
+            color: #333;
+            padding: 4px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .preview-item:last-child {
+            border-bottom: none;
         }
 
         /* カメラと結果表示 */
@@ -133,6 +167,7 @@
             padding: 15px;
             border-radius: 8px;
             word-break: break-all;
+            text-align: center;
         }
         .success {
             color: #1b5e20;
@@ -156,7 +191,7 @@
     <div class="container">
 
         <!-- ================= ページ 0: メインメニュー ================= -->
-        <div id="page-home" class="card">
+        <div id="page-home" class="card center-card">
             <h1>QRコードリーダーアプリ</h1>
             <p style="font-size: 14px; color: #666; margin-bottom: 20px;">モードを選択してください</p>
             <button class="btn" onclick="goToPage('page-normal-reader')">📷 通常のQR読み取り</button>
@@ -164,7 +199,7 @@
         </div>
 
         <!-- ================= ページ 1: 通常リーダー ================= -->
-        <div id="page-normal-reader" class="card hidden">
+        <div id="page-normal-reader" class="card center-card">
             <h1>通常のQR読み取り</h1>
             <div id="reader-normal"></div>
             <div id="result-normal" class="neutral" style="margin-bottom: 15px;">QRコードをかざしてください</div>
@@ -172,7 +207,7 @@
         </div>
 
         <!-- ================= ページ 2: 判定モードのメインメニュー ================= -->
-        <div id="page-judge-menu" class="card hidden">
+        <div id="page-judge-menu" class="card center-card">
             <h1>🎯 判定モード</h1>
             <p style="font-size: 13px; color: #666; margin-bottom: 20px;">行いたい操作を選んでください</p>
             <button class="btn btn-green" onclick="openCreatePage()">＋ 新規セットを追加する</button>
@@ -181,35 +216,60 @@
         </div>
 
         <!-- ================= ページ 3: 新規作成・追加ページ ================= -->
-        <div id="page-create" class="card hidden">
+        <div id="page-create" class="card">
             <h1>✨ 正解セットの作成</h1>
-            <p style="font-size: 13px; color: #666; text-align: left; margin-bottom: 8px;">
-                追加ボタンで箱を増やせます（※追加した箱の文字は、<strong>どれか1つ合っていれば正解</strong>になります）
-            </p>
             
-            <div id="inputs-container"></div>
+            <div class="form-group">
+                <label class="form-label">セットのタイトル（空欄の場合は自動で名前がつきます）</label>
+                <input type="text" id="set-title-input" placeholder="例: お店のスタンプラリー景品">
+            </div>
 
-            <button class="btn btn-green" onclick="addInputRow()">＋ 入力欄を追加</button>
-            <button class="btn" onclick="saveAndStartJudge()">💾 保存してこのセットで開始！</button>
+            <div class="form-group">
+                <label class="form-label">正解の文字（※どれか1つ合っていれば正解になります）</label>
+                <div id="inputs-container"></div>
+            </div>
+
+            <button class="btn btn-green" onclick="addInputRow()" style="margin-bottom: 15px;">＋ 入力欄を追加</button>
+            <button class="btn" onclick="saveNewSet()">💾 保存する</button>
             <button class="btn btn-red" onclick="goToPage('page-judge-menu')">🔙 戻る</button>
         </div>
 
         <!-- ================= ページ 4: 保存中から選ぶページ ================= -->
-        <div id="page-load" class="card hidden">
+        <div id="page-load" class="card">
             <h1>📂 保存中一覧</h1>
             <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
-                タップすると、そのセットで判定をスタートします：
+                タップすると詳細や編集を確認できます：
             </p>
             
-            <div id="saved-sets-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;">
+            <div id="saved-sets-container" style="max-height: 280px; overflow-y: auto; margin-bottom: 15px;">
                 <!-- 保存されたリストがここに並ぶ -->
             </div>
 
             <button class="btn btn-red" onclick="goToPage('page-judge-menu')">🔙 戻る</button>
         </div>
 
+        <!-- ================= ページ 4.5: 保存セットの詳細・編集画面 ================= -->
+        <div id="page-detail" class="card">
+            <h1>✏️ セットの詳細・編集</h1>
+
+            <div class="form-group">
+                <label class="form-label">タイトル</label>
+                <input type="text" id="detail-title-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">正解の文字一覧（変更して上書き保存できます）</label>
+                <div id="detail-inputs-container" style="margin-bottom: 10px; max-height: 180px; overflow-y: auto;"></div>
+                <button class="btn btn-green" onclick="addDetailInputRow()" style="padding: 8px; font-size: 14px;">＋ 入力欄を追加</button>
+            </div>
+
+            <button class="btn btn-orange" onclick="updateCurrentSet()">💾 変更を上書き保存</button>
+            <button class="btn btn-green" onclick="startJudgeFromDetail()" style="background-color: #2e7d32;">🚀 このセットでカメラを起動する！</button>
+            <button class="btn btn-red" onclick="openLoadPage()">🔙 一覧に戻る</button>
+        </div>
+
         <!-- ================= ページ 5: 判定カメラ実行ページ ================= -->
-        <div id="page-judge-camera" class="card hidden">
+        <div id="page-judge-camera" class="card center-card">
             <h1 id="active-set-title">🎯 判定中...</h1>
             <div id="reader-judge"></div>
             <div id="result-judge" class="neutral" style="margin-bottom: 15px;">QRコードをかざしてください</div>
@@ -223,15 +283,13 @@
         let judgeScanner = null;
         let scanCooldown = false;
         let activeTargets = []; // 現在判定中の正解配列
+        let currentEditingIndex = null; // 現在詳細表示・編集中のインデックス
 
         // ページ切り替え関数
         function goToPage(pageId) {
-            // すべてのページを隠す
             document.querySelectorAll('.card').forEach(el => el.classList.add('hidden'));
-            // 指定されたページを表示
             document.getElementById(pageId).classList.remove('hidden');
 
-            // カメラの起動・停止制御
             stopAllCameras();
 
             if (pageId === 'page-normal-reader') {
@@ -257,7 +315,7 @@
             }
         }
 
-        // ================= 派手なサウンド (Web Audio API) =================
+        // ================= サウンド演出 (Web Audio API) =================
         function playSound(type) {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const now = audioCtx.currentTime;
@@ -280,39 +338,30 @@
                     osc.stop(now + index * 0.07 + 0.3);
                 });
             } else {
-                // 💥 激しい低音インパクトのブブー音（ゲームオーバー風）
-                const osc1 = audioCtx.createOscillator();
-                const osc2 = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                // 🚨 ピピーッ！と高めの電子音エラー音
+                const notes = [880, 698.46]; // A5 -> F5
+                notes.forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.12);
 
-                osc1.type = 'sawtooth';
-                osc2.type = 'sawtooth';
-                
-                osc1.frequency.setValueAtTime(110.00, now); // A2
-                osc1.frequency.setValueAtTime(92.50, now + 0.2); // F#2
-                
-                osc2.frequency.setValueAtTime(116.54, now);
-                osc2.frequency.setValueAtTime(98.00, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now + index * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.12 + 0.15);
 
-                gain.gain.setValueAtTime(0.35, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-
-                osc1.connect(gain);
-                osc2.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc1.start(now);
-                osc2.start(now);
-                osc1.stop(now + 0.5);
-                osc2.stop(now + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + index * 0.12);
+                    osc.stop(now + index * 0.12 + 0.18);
+                });
             }
         }
 
         // ================= 新規作成ページ関連 =================
         function openCreatePage() {
+            document.getElementById('set-title-input').value = '';
             const container = document.getElementById('inputs-container');
             container.innerHTML = '';
-            // 最初から2つ箱を用意してあげると親切
             addInputRow();
             addInputRow();
             goToPage('page-create');
@@ -320,6 +369,10 @@
 
         function addInputRow(value = "") {
             const container = document.getElementById('inputs-container');
+            createInputRowElement(container, value);
+        }
+
+        function createInputRowElement(container, value = "") {
             const row = document.createElement('div');
             row.className = 'input-row';
             
@@ -341,17 +394,14 @@
             container.appendChild(row);
         }
 
-        // 保存してすぐに判定カメラ画面へ進む
-        function saveAndStartJudge() {
+        function saveNewSet() {
             const container = document.getElementById('inputs-container');
             const inputs = container.querySelectorAll('input[type="text"]');
             let lines = [];
             
             inputs.forEach(input => {
                 const val = input.value.trim();
-                if (val.length > 0) {
-                    lines.push(val);
-                }
+                if (val.length > 0) lines.push(val);
             });
 
             if (lines.length === 0) {
@@ -359,13 +409,16 @@
                 return;
             }
 
-            // ローカルストレージに「セット」として保存（配列の配列で管理）
             let allSets = getStoredSets();
-            allSets.push(lines);
-            localStorage.setItem('qr_saved_sets', JSON.stringify(allSets));
+            let titleInput = document.getElementById('set-title-input').value.trim();
+            if (!titleInput) {
+                titleInput = `セット #${allSets.length + 1}`;
+            }
 
-            // このセットでカメラを起動して判定スタート
-            startJudgeWithTargets(lines);
+            allSets.push({ title: titleInput, items: lines });
+            localStorage.setItem('qr_saved_sets', JSON.stringify(allSets));
+            alert("保存しました！");
+            openLoadPage();
         }
 
         // ================= 保存中リストページ関連 =================
@@ -388,19 +441,19 @@
             }
 
             container.innerHTML = '';
-            sets.forEach((setArray, index) => {
+            sets.forEach((setData, index) => {
                 const card = document.createElement('div');
                 card.className = 'saved-card';
 
-                // タップしたらそのセットで判定開始
+                // タップしたら詳細・編集画面を開く
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'saved-info';
                 infoDiv.innerHTML = `
-                    <div class="saved-title-text">セット #${index + 1} (${setArray.length}個の文字)</div>
-                    <div class="saved-sub-text">内容: ${setArray.join(', ')}</div>
+                    <div class="saved-title-text">${setData.title}</div>
+                    <div class="saved-sub-text">正解文字: ${setData.items.join(', ')}</div>
                 `;
                 infoDiv.onclick = function() {
-                    startJudgeWithTargets(setArray);
+                    openDetailPage(index);
                 };
 
                 // 削除用「×」ボタン
@@ -408,8 +461,8 @@
                 delBtn.className = 'del-btn';
                 delBtn.innerText = '×';
                 delBtn.onclick = function(e) {
-                    e.stopPropagation(); // カード全体のクリックイベント発火を防ぐ
-                    if (confirm(`セット #${index + 1} を削除しますか？`)) {
+                    e.stopPropagation();
+                    if (confirm(`「${setData.title}」を削除しますか？`)) {
                         sets.splice(index, 1);
                         localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
                         renderSavedSetsList();
@@ -420,6 +473,72 @@
                 card.appendChild(delBtn);
                 container.appendChild(card);
             });
+        }
+
+        // ================= 詳細・編集ページ関連 =================
+        function openDetailPage(index) {
+            currentEditingIndex = index;
+            const sets = getStoredSets();
+            const setData = sets[index];
+
+            document.getElementById('detail-title-input').value = setData.title;
+            const container = document.getElementById('detail-inputs-container');
+            container.innerHTML = '';
+            setData.items.forEach(item => {
+                createInputRowElement(container, item);
+            });
+
+            goToPage('page-detail');
+        }
+
+        function addDetailInputRow(value = "") {
+            const container = document.getElementById('detail-inputs-container');
+            createInputRowElement(container, value);
+        }
+
+        function updateCurrentSet() {
+            const container = document.getElementById('detail-inputs-container');
+            const inputs = container.querySelectorAll('input[type="text"]');
+            let lines = [];
+            
+            inputs.forEach(input => {
+                const val = input.value.trim();
+                if (val.length > 0) lines.push(val);
+            });
+
+            if (lines.length === 0) {
+                alert("正解の文字が1つもありません！");
+                return;
+            }
+
+            let titleInput = document.getElementById('detail-title-input').value.trim();
+            if (!titleInput) {
+                titleInput = `セット #${currentEditingIndex + 1}`;
+            }
+
+            let sets = getStoredSets();
+            sets[currentEditingIndex] = { title: titleInput, items: lines };
+            localStorage.setItem('qr_saved_sets', JSON.stringify(sets));
+            alert("上書き保存しました！");
+            openLoadPage();
+        }
+
+        function startJudgeFromDetail() {
+            const container = document.getElementById('detail-inputs-container');
+            const inputs = container.querySelectorAll('input[type="text"]');
+            let lines = [];
+            inputs.forEach(input => {
+                const val = input.value.trim();
+                if (val.length > 0) lines.push(val);
+            });
+
+            if (lines.length === 0) {
+                alert("正解の文字がありません！");
+                return;
+            }
+
+            let title = document.getElementById('detail-title-input').value.trim() || "判定セット";
+            startJudgeWithTargets(lines, title);
         }
 
         // ================= カメラ＆判定処理 =================
@@ -439,48 +558,4 @@
                     setTimeout(() => { scanCooldown = false; }, 1500);
                 }
             ).catch(err => {
-                console.error("カメラ起動エラー", err);
-                document.getElementById('result-normal').innerText = "カメラの起動に失敗しました（権限を確認してください）";
-            });
-        }
-
-        function startJudgeWithTargets(targets) {
-            activeTargets = targets;
-            goToPage('page-judge-camera');
-            document.getElementById('active-set-title').innerText = `🎯 判定中 (${targets.length}個の正解)`;
-
-            judgeScanner = new Html5Qrcode("reader-judge");
-            judgeScanner.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: 250 },
-                (decodedText) => {
-                    if (scanCooldown) return;
-
-                    const resDiv = document.getElementById('result-judge');
-                    // いずれか1つでも一致していれば正解 (OR判定)
-                    if (activeTargets.includes(decodedText)) {
-                        playSound('success');
-                        resDiv.className = "success";
-                        resDiv.innerHTML = `🎉 【正解！】<br>読み取り文字: ${decodedText}`;
-                    } else {
-                        playSound('error');
-                        resDiv.className = "error";
-                        resDiv.innerHTML = `💥 【ブブー！】違う文字です<br>読み取り文字: ${decodedText}`;
-                    }
-
-                    scanCooldown = true;
-                    setTimeout(() => { scanCooldown = false; }, 1800);
-                }
-            ).catch(err => {
-                console.error("カメラ起動エラー", err);
-                document.getElementById('result-judge').innerText = "カメラの起動に失敗しました（権限を確認してください）";
-            });
-        }
-
-        function cancelJudge() {
-            stopAllCameras();
-            goToPage('page-judge-menu');
-        }
-    </script>
-</body>
-</html>
+                conso
