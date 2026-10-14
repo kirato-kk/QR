@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRコード判定＆リーダーアプリ</title>
+    <!-- html5-qrcode ライブラリ -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        /* 右上の切り替えスイッチ（トグルスイッチ） */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .switch-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* メインカード */
+        .card {
+            background: #fff;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #reader {
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+
+        /* 入力ボックスのコンテナ */
+        #inputs-container {
+            margin-bottom: 10px;
+            max-height: 180px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .input-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .input-row input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        /* 削除ボタン（×） */
+        .del-btn {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .del-btn:hover {
+            background-color: #ff1744;
+        }
+
+        /* 各種ボタン */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn:hover {
+            background-color: #0b7dda;
+        }
+        .btn-add {
+            background-color: #4caf50;
+        }
+        .btn-add:hover {
+            background-color: #43a047;
+        }
+
+        /* 保存中リストのスタイル */
+        .saved-section {
+            text-align: left;
+            margin-bottom: 15px;
+            border-top: 1px dashed #ddd;
+            padding-top: 10px;
+        }
+        .saved-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .saved-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .saved-item {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #bbdefb;
+            transition: 0.2s;
+            word-break: break-all;
+        }
+        .saved-item:hover {
+            background-color: #bbdefb;
+            transform: scale(1.05);
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            word-break: break-all;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            color: #1b5e20;
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+        }
+        .error {
+            color: #b71c1c;
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+        }
+        .neutral {
+            color: #333;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 右上のスライドスイッチ -->
+    <div class="header-container">
+        <span id="mode-title" class="switch-label">モード: 通常リーダー</span>
+        <label class="switch">
+            <input type="checkbox" id="mode-switch" onchange="toggleMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="card">
+        <h1>QRコードリーダー</h1>
+
+        <!-- 判定モード用の設定エリア -->
+        <div id="judge-settings" class="hidden">
+            <p style="font-size: 13px; color: #666; text-align: left; margin-bottom: 8px;">
+                正解とするテキストを入力ボックスに分けて登録してください：
+            </p>
+            
+            <!-- 入力ボックスが並ぶエリア -->
+            <div id="inputs-container">
+                <!-- ここに動的に入力ボックスが追加されます -->
+            </div>
+
+            <!-- ボタンエリア（＋追加 ＆ 💾 保存） -->
+            <div class="btn-group">
+                <button class="btn btn-add" onclick="addInputRow()">＋ 入力欄を追加</button>
+                <button class="btn" onclick="saveTexts()">💾 すべて保存する</button>
+            </div>
+
+            <!-- 保存中のテキストが表示されるエリア -->
+            <div class="saved-section">
+                <div class="saved-title">📂 保存中（クリックすると、その文字以外をすべて弾きます）:</div>
+                <div id="saved-list" class="saved-list">
+                    <span style="font-size: 12px; color: #999;">保存された文字はありません</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- カメラ映像エリア -->
+        <div id="reader"></div>
+
+        <!-- 結果表示エリア -->
+        <div id="result" class="neutral">カメラを起動中...</div>
+    </div>
+
+    <script>
+        let html5QrCode = null;
+        let isJudgeMode = false;
+        let scanCooldown = false;
+
+        // 【派手なサウンド演出】Web Audio API
+        function playSound(type) {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+
+            if (type === 'success') {
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // ド・ミ・ソ・高ド
+                notes.forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.08);
+                    
+                    gain.gain.setValueAtTime(0.15, now + index * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.2);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + index * 0.08);
+                    osc.stop(now + index * 0.08 + 0.25);
+                });
+            } else {
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc2.type = 'sawtooth';
+                
+                osc1.frequency.setValueAtTime(130.81, now);
+                osc1.frequency.setValueAtTime(110.00, now + 0.15);
+                
+                osc2.frequency.setValueAtTime(138.59, now);
+                osc2.frequency.setValueAtTime(116.54, now + 0.15);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.45);
+                osc2.stop(now + 0.45);
+            }
+        }
+
+        // 入力行を画面に追加する関数
+        function addInputRow(value = "") {
+            const container = document.getElementById('inputs-container');
+            const row = document.createElement('div');
+            row.className = 'input-row';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = '例: apple';
+            input.value = value;
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'del-btn';
+            delBtn.innerText = '×';
+            delBtn.onclick = function() {
+                container.removeChild(row);
+            };
+
+            row.appendChild(input);
+            row.appendChild(delBtn);
+            container.appendChild(row);
+        }
+
+        // 保存ボタンが押されたとき
+        function saveTexts() {
+            const container = document.getElementById('inputs-container');
+            const inputs = container.querySelectorAll('input[type="text"]');
+            let lines = [];
+            
+            inputs.forEach(input => {
+                const val = input.value.trim();
+                if (val.length > 0) {
+                    lines.push(val);
+                }
+            });
+            
+            // ローカルストレージに保存
+            localStorage.setItem('qr_saved_texts', JSON.stringify(lines));
+            renderSavedList();
+            alert("テキストを保存しました！");
+        }
+
+        // 保存リストを描画する ＆ 入力ボックスにも復元する
+        function renderSavedList(fillInputs = false) {
+            const savedListContainer = document.getElementById('saved-list');
+            const stored = localStorage.getItem('qr_saved_texts');
+            const lines = stored ? JSON.parse(stored) : [];
+
+            // 必要に応じて入力ボックス側も再構築する
+            if (fillInputs) {
+                const container = document.getElementById('inputs-container');
+                container.innerHTML = '';
+                if (lines.length > 0) {
+                    lines.forEach(text => addInputRow(text));
+                } else {
+                    addInputRow(); // 最低1つは用意する
+                }
+            }
+
+            if (lines.length === 0) {
+                savedListContainer.innerHTML = '<span style="font-size: 12px; color: #999;">保存された文字はありません</span>';
+                return;
+            }
+
+            savedListContainer.innerHTML = '';
+            lines.forEach(text => {
+                const item = document.createElement('div');
+                item.className = 'saved-item';
+                item.innerText = text;
+                // 保存中のテキストをクリックしたら、その文字だけに絞り込んで即座に適用する
+                item.onclick = function() {
+                    localStorage.setItem('qr_saved_texts', JSON.stringify([text]));
+                    renderSavedList(true); // 入力ボックスもその1つにする
+                    
+                    const checkbox = document.getElementById('mode-switch');
+                    if (!checkbox.checked) {
+                        checkbox.checked = true;
+                        toggleMode();
+                    }
+                    
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.className = "neutral";
+                    resultDiv.innerHTML = `📌 「${text}」以外を弾くモードに設定しました！`;
+                };
+                savedListContainer.appendChild(item);
+            });
+        }
+
+        // 読み取り成功時の処理
+        function onScanSuccess(decodedText, decodedResult) {
+            if (scanCooldown) return;
+
+            const resultDiv = document.getElementById('result');
+
+            if (isJudgeMode) {
+                // 【判定モード】
+                const stored = localStorage.getItem('qr_saved_texts');
+                const validTargets = stored ? JSON.parse(stored) : [];
+
+                if (validTargets.includes(decodedText)) {
+                    playSound('success');
+                    resultDiv.className = "result success";
+                    resultDiv.innerHTML = `🎉 【正解！】<br>読み取り文字: ${decodedText}`;
+                } else {
+                    playSound('error');
+                    resultDiv.className = "result error";
+                    resultDiv.innerHTML = `💥 【ブブー！】違う文字です<br>読み取り文字: ${decodedText}`;
+                }
+            } else {
+                // 【通常リーダーモード】
+                playSound('success');
+                resultDiv.className = "result neutral";
+                resultDiv.innerHTML = `読み取り結果: <a href="${decodedText.startsWith('http') ? decodedText : '#'}" target="_blank">${decodedText}</a>`;
+            }
+
+            // 連続読み取り防止ロック（1.8秒）
+            scanCooldown = true;
+            setTimeout(() => {
+                scanCooldown = false;
+            }, 1800);
+        }
+
+        // モード切替
+        function toggleMode() {
+            const checkbox = document.getElementById('mode-switch');
+            isJudgeMode = checkbox.checked;
+            
+            const modeTitle = document.getElementById('mode-title');
+            const settingsArea = document.getElementById('judge-settings');
+            const resultDiv = document.getElementById('result');
+
+            if (isJudgeMode) {
+                modeTitle.innerText = "モード: 判定モード";
+                settingsArea.classList.remove('hidden');
+                resultDiv.className = "neutral";
+                resultDiv.innerText = "正解の文字を保存してスキャンしてください";
+            } else {
+                modeTitle.innerText = "モード: 通常リーダー";
+                settingsArea.classList.add('hidden');
+                resultDiv.className = "neutral";
+                resultDiv.innerText = "QRコードをかざしてください";
+            }
+        }
+
+        // カメラ起動
+        function startCamera() {
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: 250 },
+                onScanSuccess
+            ).catch((err) => {
+                console.error("カメラ起動エラー", err);
+                document.getElementById('result').innerText = "カメラの起動に失敗しました（権限を確認してください）";
+            });
+        }
+
+        // ページ読み込み時の初期化
+        window.onload = function() {
+            renderSavedList(true); // 保存データを読み込み、入力ボックスも復元
+            startCamera();
+        };
+    </script>
+</body>
+  </html>
